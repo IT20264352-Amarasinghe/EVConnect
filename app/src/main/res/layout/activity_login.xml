@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText android:id="@+id/etNic" android:hint="NIC" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <EditText android:id="@+id/etPassword" android:hint="Password" android:inputType="textPassword" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+    <Button android:id="@+id/btnLogin" android:text="Login" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/btnGoToRegister" android:text="Register Here" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+</LinearLayout>
