@@ -12,6 +12,7 @@ import com.evconnect.R;
 import com.evconnect.db.UserDao;
 import com.evconnect.models.LoginRequest;
 import com.evconnect.models.LoginResponse;
+import com.evconnect.models.ServerLoginCallback;
 import com.evconnect.network.ApiClient;
 import com.evconnect.network.ApiService;
 import com.evconnect.utils.TokenManager;
@@ -65,16 +66,25 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // Call the loginUser method from UserDao to validate the credentials.
-            if (userDao.loginUser(nic, password)) {
-                // Display a success message if login is successful.
-                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                // start the dashboard activity upon successful login.
-//                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                finish();
-            } else {
-                checkServerLogin(nic, password);
-            }
+            // 🔹 Try server login first
+            checkServerLogin(nic, password, new ServerLoginCallback() {
+                @Override
+                public void onSuccess(String token) {
+                    Toast.makeText(LoginActivity.this, "Login Successful (Server)!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
+                @Override
+                public void onFailure() {
+                    // 🔹 If server login fails, try offline login
+                    if (userDao.loginUser(nic, password)) {
+                        Toast.makeText(LoginActivity.this, "Login Successful (Offline)!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         });
 
         // Set an OnClickListener for the "Go to Register" button.
@@ -86,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void checkServerLogin(String nic, String password) {
+    private void checkServerLogin(String nic, String password, ServerLoginCallback callback) {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
 
         LoginRequest request = new LoginRequest(nic, password);
@@ -97,20 +107,21 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
 
-                    // Save token locally (SharedPreferences, etc.)
+                    // Save token locally
                     tokenManager.saveToken(token);
 
-                    Toast.makeText(LoginActivity.this, "Login Successful (Server)!", Toast.LENGTH_SHORT).show();
-                    // startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                    finish();
+                    // Notify caller of success
+                    callback.onSuccess(token);
                 } else {
-                    Toast.makeText(LoginActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                    // Notify caller of failure (invalid credentials)
+                    callback.onFailure();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Server error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                // Notify caller of failure (server unreachable, etc.)
+                callback.onFailure();
             }
         });
     }
