@@ -39,4 +39,11 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     // bcrypt library
     implementation (libs.jbcrypt)
+    // Retrofit & Gson
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+    // Optional: OkHttp Logging
+    implementation(libs.okhttp.logging)
+
 }

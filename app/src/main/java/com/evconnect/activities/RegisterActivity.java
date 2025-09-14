@@ -42,16 +42,35 @@ public class RegisterActivity extends AppCompatActivity {
         // Set an OnClickListener for the register button.
         btnRegister.setOnClickListener(v -> {
             // Retrieve the text entered by the user from each input field.
-            String nic = etNic.getText().toString();
-            String name = etName.getText().toString();
-            String email = etEmail.getText().toString();
-            String phone = etPhone.getText().toString();
-            String password = etPassword.getText().toString();
+            String nic = etNic.getText().toString().trim();
+            String name = etName.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+            String phone = etPhone.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
 
-            // Perform basic validation to ensure essential fields are not empty.
-            if (nic.isEmpty() || password.isEmpty()) {
-                // Display a message if required fields are missing.
-                Toast.makeText(this, "NIC & Password are required", Toast.LENGTH_SHORT).show();
+            if (nic.isEmpty()) {
+                etNic.setError("NIC is required");
+                etNic.requestFocus();
+                return;
+            }
+            if (name.isEmpty()) {
+                etName.setError("Name is required");
+                etName.requestFocus();
+                return;
+            }
+            if (email.isEmpty()) {
+                etEmail.setError("Email is required");
+                etEmail.requestFocus();
+                return;
+            }
+            if (phone.isEmpty()) {
+                etPhone.setError("Phone is required");
+                etPhone.requestFocus();
+                return;
+            }
+            if (password.isEmpty()) {
+                etPassword.setError("Password is required");
+                etPassword.requestFocus();
                 return;
             }
 

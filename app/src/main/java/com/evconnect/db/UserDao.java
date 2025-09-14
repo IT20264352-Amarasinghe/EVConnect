@@ -13,7 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
  */
 public class UserDao {
     // An instance of DBHelper to get a reference to the database.
-    private DBHelper dbHelper;
+    private final DBHelper dbHelper;
 
     /**
      * Constructor for UserDao.
