@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 /**
  * This class serves as a Data Access Object (DAO) for the 'user' table.
  * It encapsulates all the database operations related to user management,
@@ -65,15 +67,19 @@ public class UserDao {
 
         // Perform a database query to find a user that matches the provided NIC, password, and active status.
         Cursor cursor = db.query(
-                DBHelper.TABLE_USER,                           // The table to query.
-                new String[]{DBHelper.COL_NIC},                // The columns to return (we only need the NIC to confirm existence).
-                DBHelper.COL_NIC + "=? AND " + DBHelper.COL_PASSWORD + "=? AND " + DBHelper.COL_STATUS + "=?", // The WHERE clause.
-                new String[]{nic, password, "ACTIVE"},         // The values to substitute for the '?' placeholders in the WHERE clause.
-                null, null, null                               // Group By, Having, and Order By clauses are not needed here.
+                DBHelper.TABLE_USER,
+                new String[]{DBHelper.COL_PASSWORD},  // Fetch stored hashed password
+                DBHelper.COL_NIC + "=? AND " + DBHelper.COL_STATUS + "=?",
+                new String[]{nic, "ACTIVE"},
+                null, null, null
         );
 
         // Check if the cursor contains any rows. If moveToFirst() returns true, a matching user was found.
-        boolean loggedIn = cursor.moveToFirst();
+        boolean loggedIn = false;
+        if (cursor.moveToFirst()) {
+            String storedHash = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PASSWORD));
+            loggedIn = BCrypt.checkpw(password, storedHash);
+        }
         // Always close the cursor to release its resources.
         cursor.close();
         // Close the database connection.
