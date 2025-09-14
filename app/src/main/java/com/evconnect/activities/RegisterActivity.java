@@ -12,10 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.evconnect.R;
 import com.evconnect.db.UserDao;
+import com.evconnect.models.ErrorResponse;
 import com.evconnect.models.RegistrationRequest;
 import com.evconnect.models.RegistrationResponse;
 import com.evconnect.network.ApiClient;
 import com.evconnect.network.ApiService;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,10 +111,21 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                         }
-                    } else {
-                        // Read error response and log
-                            Log.e("RegisterActivity", "Error: " + response);
+                    } else if (!response.isSuccessful()) {
+                        try {
+                            // Parse error body as JSON
+                            Gson gson = new Gson();
+                            ErrorResponse error = gson.fromJson(
+                                    response.errorBody().charStream(),
+                                    ErrorResponse.class
+                            );
+
+                            Toast.makeText(RegisterActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                            Log.e("RegisterActivity", "Error code: " + error);
+                        } catch (Exception e) {
+                            Log.e("RegisterActivity", "Error code: " + e);
                             Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
 
