@@ -29,7 +29,6 @@ public class UserDao {
      * @param nic The user's NIC (National Identity Card) number.
      * @param name The user's full name.
      * @param email The user's email address.
-     * @param phone The user's phone number.
      * @param password The user's password.
      * @return True if the user was successfully inserted, false otherwise (e.g., if NIC already exists).
      */

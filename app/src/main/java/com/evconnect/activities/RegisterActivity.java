@@ -2,6 +2,7 @@ package com.evconnect.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.evconnect.R;
 import com.evconnect.db.UserDao;
+import com.evconnect.models.RegistrationRequest;
+import com.evconnect.models.RegistrationResponse;
+import com.evconnect.network.ApiClient;
+import com.evconnect.network.ApiService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -74,19 +83,45 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            // Call the registerUser method in the DAO to save the new user.
-            boolean inserted = userDao.registerUser(nic, name, email, phone, password);
-            if (inserted) {
-                // Display a success message if the user was created successfully.
-                Toast.makeText(this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                // Navigate the user to the LoginActivity.
-                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                // Finish the current activity so the user can't go back to the registration screen.
-                finish();
-            } else {
-                // Display a message if the user already exists in the database.
-                Toast.makeText(this, "User already exists!", Toast.LENGTH_SHORT).show();
-            }
+            // Call backend
+            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+            RegistrationRequest request = new RegistrationRequest(nic, name, email, phone, password);
+
+            apiService.register(request).enqueue(new Callback<RegistrationResponse>() {
+                @Override
+                public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        RegistrationResponse registeredUser = response.body();
+
+                        // Save user locally
+                        boolean inserted = userDao.registerUser(
+                                registeredUser.getNic(),
+                                registeredUser.getName(),
+                                registeredUser.getEmail(),
+                                registeredUser.getPhone(),
+                                registeredUser.getPassword()
+                        );
+
+                        if (inserted) {
+                            Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            finish();
+                        } else {
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                        }
+                    } else {
+                        // Read error response and log
+                            Log.e("RegisterActivity", "Error: " + response);
+                            Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<RegistrationResponse> call, Throwable t) {
+                    Log.e("RegisterActivity", "Error: " + t);
+                    Toast.makeText(RegisterActivity.this, "Server error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         // Set an OnClickListener for the "Go to Login" button.
