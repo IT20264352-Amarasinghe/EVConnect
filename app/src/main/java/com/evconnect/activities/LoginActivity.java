@@ -70,6 +70,8 @@ public class LoginActivity extends AppCompatActivity {
             checkServerLogin(nic, password, new ServerLoginCallback() {
                 @Override
                 public void onSuccess(String token) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
                     Toast.makeText(LoginActivity.this, "Login Successful (Server)!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -78,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure() {
                     // 🔹 If server login fails, try offline login
                     if (userDao.loginUser(nic, password)) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
                         Toast.makeText(LoginActivity.this, "Login Successful (Offline)!", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
