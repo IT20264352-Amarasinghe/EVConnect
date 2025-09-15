@@ -32,7 +32,7 @@ public class UserDao {
      * @param password The user's password.
      * @return True if the user was successfully inserted, false otherwise (e.g., if NIC already exists).
      */
-    public boolean registerUser(String nic, String name, String email, String phone, String password) {
+    public boolean registerUser(String nic, String name, String email, String phone, String role, String password) {
         // Get a writable database instance.
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -42,6 +42,7 @@ public class UserDao {
         values.put(DBHelper.COL_NAME, name);
         values.put(DBHelper.COL_EMAIL, email);
         values.put(DBHelper.COL_PHONE, phone);
+        values.put(DBHelper.COL_ROLE, role);
         values.put(DBHelper.COL_PASSWORD, password);
         values.put(DBHelper.COL_STATUS, "ACTIVE"); // Set the initial status to 'ACTIVE'.
 

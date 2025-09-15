@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             // Call backend
             ApiService apiService = ApiClient.getClient().create(ApiService.class);
-            RegistrationRequest request = new RegistrationRequest(nic, name, email, phone, password);
+            RegistrationRequest request = new RegistrationRequest(nic, name, email, phone, "customer" ,password);
 
             apiService.register(request).enqueue(new Callback<RegistrationResponse>() {
                 @Override
@@ -101,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 registeredUser.getName(),
                                 registeredUser.getEmail(),
                                 registeredUser.getPhone(),
+                                registeredUser.getRole(),
                                 registeredUser.getPassword()
                         );
 

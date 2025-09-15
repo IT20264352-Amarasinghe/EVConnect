@@ -11,7 +11,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Define constants for the database name and version.
     public static final String DATABASE_NAME = "ev_connect.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     // Define constants for the table and column names to avoid typos.
     public static final String TABLE_USER = "user";
@@ -19,6 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_NAME = "name";
     public static final String COL_EMAIL = "email";
     public static final String COL_PHONE = "phone";
+    public static final String COL_ROLE = "role";
     public static final String COL_PASSWORD = "password";
     public static final String COL_STATUS = "status";
 
@@ -29,6 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_NAME + " TEXT, " +
                     COL_EMAIL + " TEXT, " +
                     COL_PHONE + " TEXT, " +
+                    COL_ROLE + " TEXT, " +
                     COL_PASSWORD + " TEXT, " +
                     // Status column with a check constraint to ensure values are either 'ACTIVE' or 'DEACTIVATED'.
                     // 'ACTIVE' is the default value for new users.
