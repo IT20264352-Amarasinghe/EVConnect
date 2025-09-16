@@ -4,18 +4,130 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.evconnect.R;
+import com.evconnect.models.BookingRequest;
+import com.evconnect.models.BookingResponse;
+import com.evconnect.models.Charger;
+import com.evconnect.models.Slot;
+import com.evconnect.network.ApiClient;
+import com.evconnect.network.ApiService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateBookingFragment extends Fragment {
+
+    private Spinner spinnerChargers, spinnerSlots;
+    private Button btnCreateBooking;
+    private List<Charger> chargerList = new ArrayList<>();
+    private List<Slot> slotList = new ArrayList<>();
+    private Charger selectedCharger;
+    private Slot selectedSlot;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_create_booking, container, false);
+        View view = inflater.inflate(R.layout.fragment_create_booking, container, false);
+
+        spinnerChargers = view.findViewById(R.id.spinnerChargers);
+        spinnerSlots = view.findViewById(R.id.spinnerSlots);
+        btnCreateBooking = view.findViewById(R.id.btnCreateBooking);
+
+        loadChargers();
+
+        spinnerChargers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCharger = chargerList.get(position);
+                slotList = selectedCharger.getSlots();
+                List<String> slotStrings = new ArrayList<>();
+                for (Slot s : slotList) {
+                    if ("Available".equals(s.getStatus())) {
+                        slotStrings.add(s.getStartTime() + " - " + s.getEndTime());
+                    }
+                }
+                ArrayAdapter<String> slotAdapter = new ArrayAdapter<>(getContext(),
+                        android.R.layout.simple_spinner_item, slotStrings);
+                slotAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerSlots.setAdapter(slotAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        btnCreateBooking.setOnClickListener(v -> {
+            int slotIndex = spinnerSlots.getSelectedItemPosition();
+            if (slotIndex >= 0 && slotIndex < slotList.size()) {
+                selectedSlot = slotList.get(slotIndex);
+                createBooking("123V", selectedCharger.getCode(), selectedSlot.getId());
+            }
+        });
+
+        return view;
+    }
+
+    private void loadChargers() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.getChargers().enqueue(new Callback<List<Charger>>() {
+            @Override
+            public void onResponse(Call<List<Charger>> call, Response<List<Charger>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    chargerList = response.body();
+
+                    List<String> chargerNames = new ArrayList<>();
+                    for (Charger c : chargerList) {
+                        chargerNames.add(c.getCode() + " - " + c.getLocation());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                            android.R.layout.simple_spinner_item, chargerNames);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerChargers.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Charger>> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void createBooking(String customerNic, String chargerCode, String slotId) {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        BookingRequest bookingRequest = new BookingRequest(customerNic, chargerCode, slotId);
+
+        apiService.createBooking(bookingRequest).enqueue(new Callback<BookingResponse>() {
+            @Override
+            public void onResponse(Call<BookingResponse> call, Response<BookingResponse> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Booking Created!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Failed: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookingResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
+
