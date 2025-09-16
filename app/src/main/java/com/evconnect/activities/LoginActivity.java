@@ -2,6 +2,7 @@ package com.evconnect.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -117,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                     // Notify caller of success
                     callback.onSuccess(token);
                 } else {
+
                     // Notify caller of failure (invalid credentials)
                     callback.onFailure();
                 }

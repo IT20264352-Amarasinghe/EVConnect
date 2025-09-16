@@ -42,6 +42,7 @@ dependencies {
     // Retrofit & Gson
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
+    implementation(libs.material)
 
     // Optional: OkHttp Logging
     implementation(libs.okhttp.logging)
