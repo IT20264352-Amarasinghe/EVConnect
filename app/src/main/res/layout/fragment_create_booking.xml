@@ -2,23 +2,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:gravity="center"
+    android:padding="24dp">
+
+    <!-- Charger Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Charger"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingBottom="4dp"
+        android:gravity="start" />
 
     <Spinner
         android:id="@+id/spinnerChargers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/select_charger"/>
+        android:spinnerMode="dropdown"/>
+
+    <!-- Slot Label -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Slot"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingTop="16dp"
+        android:paddingBottom="4dp"
+        android:gravity="start" />
 
     <Spinner
         android:id="@+id/spinnerSlots"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/select_slot"/>
+        android:spinnerMode="dropdown"/>
 
+    <!-- Button -->
     <Button
         android:id="@+id/btnCreateBooking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Create Booking"/>
 </LinearLayout>

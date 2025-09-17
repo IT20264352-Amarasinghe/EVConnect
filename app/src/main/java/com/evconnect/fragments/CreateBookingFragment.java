@@ -21,6 +21,7 @@ import com.evconnect.models.Charger;
 import com.evconnect.models.Slot;
 import com.evconnect.network.ApiClient;
 import com.evconnect.network.ApiService;
+import com.evconnect.utils.ApiErrorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,8 @@ public class CreateBookingFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Booking Created!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "Failed: " + response.message(), Toast.LENGTH_SHORT).show();
+                    String errorMessage = ApiErrorUtils.getErrorMessage(response);
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
