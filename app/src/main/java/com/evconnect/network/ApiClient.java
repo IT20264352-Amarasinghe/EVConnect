@@ -11,7 +11,7 @@ public class ApiClient {
     public static Retrofit getClient() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.BASE_URL) // 👈 replace with your backend base URL
+                    .baseUrl(Constants.BASE_URL) //  backend base URL
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

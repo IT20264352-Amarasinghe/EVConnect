@@ -15,11 +15,20 @@
         android:paddingBottom="4dp"
         android:gravity="start" />
 
+
     <Spinner
         android:id="@+id/spinnerChargers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:spinnerMode="dropdown"/>
+
+    <Button
+        android:id="@+id/btnPickDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Date"
+        android:layout_marginTop="16dp"/>
+
 
     <!-- Slot Label -->
     <TextView

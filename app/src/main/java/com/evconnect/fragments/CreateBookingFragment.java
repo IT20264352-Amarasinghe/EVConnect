@@ -1,5 +1,7 @@
 package com.evconnect.fragments;
 
+import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import com.evconnect.network.ApiService;
 import com.evconnect.utils.ApiErrorUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,11 +37,12 @@ import retrofit2.Response;
 public class CreateBookingFragment extends Fragment {
 
     private Spinner spinnerChargers, spinnerSlots;
-    private Button btnCreateBooking;
+    private Button btnCreateBooking, btnPickDate;
     private List<Charger> chargerList = new ArrayList<>();
     private List<Slot> slotList = new ArrayList<>();
     private Charger selectedCharger;
     private Slot selectedSlot;
+    private String selectedDate; // yyyy-MM-dd
 
     @Nullable
     @Override
@@ -48,6 +53,7 @@ public class CreateBookingFragment extends Fragment {
         spinnerChargers = view.findViewById(R.id.spinnerChargers);
         spinnerSlots = view.findViewById(R.id.spinnerSlots);
         btnCreateBooking = view.findViewById(R.id.btnCreateBooking);
+        btnPickDate = view.findViewById(R.id.btnPickDate);
 
         loadChargers();
 
@@ -55,22 +61,15 @@ public class CreateBookingFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedCharger = chargerList.get(position);
-                slotList = selectedCharger.getSlots();
-                List<String> slotStrings = new ArrayList<>();
-                for (Slot s : slotList) {
-                    if ("Available".equals(s.getStatus())) {
-                        slotStrings.add(s.getStartTime() + " - " + s.getEndTime());
-                    }
+                if (selectedDate != null) {
+                    loadSlots(selectedCharger.getId(), selectedDate);
                 }
-                ArrayAdapter<String> slotAdapter = new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_spinner_item, slotStrings);
-                slotAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerSlots.setAdapter(slotAdapter);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
+
+        btnPickDate.setOnClickListener(v -> showDatePicker());
 
         btnCreateBooking.setOnClickListener(v -> {
             int slotIndex = spinnerSlots.getSelectedItemPosition();
@@ -81,6 +80,19 @@ public class CreateBookingFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePicker = new DatePickerDialog(getContext(),
+                (view, year, month, dayOfMonth) -> {
+                    selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
+                    if (selectedCharger != null) {
+                        loadSlots(selectedCharger.getId(), selectedDate);
+                    }
+                },
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePicker.show();
     }
 
     private void loadChargers() {
@@ -100,12 +112,64 @@ public class CreateBookingFragment extends Fragment {
                             android.R.layout.simple_spinner_item, chargerNames);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerChargers.setAdapter(adapter);
+                }else{
+                    String errorMessage = ApiErrorUtils.getErrorMessage(response);
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Charger>> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Charger Loading Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadSlots(String chargerId, String date) {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.getSlots(chargerId, date).enqueue(new Callback<List<Slot>>() {
+            @Override
+            public void onResponse(Call<List<Slot>> call, Response<List<Slot>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    slotList = response.body();
+
+                    List<String> slotStrings = new ArrayList<>();
+                    for (Slot s : slotList) {
+                        slotStrings.add(s.getStartTime() + " - " + s.getEndTime() +
+                                ("Available".equals(s.getStatus()) ? "" : " (Unavailable)"));
+                    }
+
+                    ArrayAdapter<String> slotAdapter = new ArrayAdapter<String>(getContext(),
+                            android.R.layout.simple_spinner_item, slotStrings) {
+                        @Override
+                        public boolean isEnabled(int position) {
+                            return "Available".equals(slotList.get(position).getStatus());
+                        }
+
+                        @Override
+                        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                            View view = super.getDropDownView(position, convertView, parent);
+                            TextView tv = (TextView) view;
+                            if ("Available".equals(slotList.get(position).getStatus())) {
+                                tv.setTextColor(Color.BLACK);
+                            } else {
+                                tv.setTextColor(Color.GRAY);
+                            }
+                            return view;
+                        }
+                    };
+
+                    slotAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerSlots.setAdapter(slotAdapter);
+                }else{
+                    String errorMessage = ApiErrorUtils.getErrorMessage(response);
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Slot>> call, Throwable t) {
+                Toast.makeText(getContext(), "LoadSlots Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

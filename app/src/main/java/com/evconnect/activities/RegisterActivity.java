@@ -17,6 +17,7 @@ import com.evconnect.models.RegistrationRequest;
 import com.evconnect.models.RegistrationResponse;
 import com.evconnect.network.ApiClient;
 import com.evconnect.network.ApiService;
+import com.evconnect.utils.ApiErrorUtils;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -94,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         RegistrationResponse registeredUser = response.body();
-
                         // Save user locally
                         boolean inserted = userDao.registerUser(
                                 registeredUser.getNic(),
@@ -110,22 +110,17 @@ public class RegisterActivity extends AppCompatActivity {
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             finish();
                         } else {
+                            Toast.makeText(RegisterActivity.this, "Local data sync failed", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                         }
                     } else if (!response.isSuccessful()) {
                         try {
-                            // Parse error body as JSON
-                            Gson gson = new Gson();
-                            ErrorResponse error = gson.fromJson(
-                                    response.errorBody().charStream(),
-                                    ErrorResponse.class
-                            );
-
-                            Toast.makeText(RegisterActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                            Log.e("RegisterActivity", "Error code: " + error);
+                            String errorMessage = ApiErrorUtils.getErrorMessage(response);
+                            Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                            Log.e("RegisterActivity", "RegisterActivity Error: " + errorMessage);
                         } catch (Exception e) {
-                            Log.e("RegisterActivity", "Error code: " + e);
-                            Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                            Log.e("RegisterActivity", "RegisterActivity Error: " + e);
+                            Toast.makeText(RegisterActivity.this, "Registration Failed : "+e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
