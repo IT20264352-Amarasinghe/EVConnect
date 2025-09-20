@@ -9,6 +9,7 @@ material = "1.13.0"
 retrofit = "2.9.0"
 okhttp = "5.0.0-alpha.11"
 gson = "2.10.1"
+jwtdecode = "2.0.1"
 
 [libraries]
 jbcrypt = { module = "org.mindrot:jbcrypt", version.ref = "jbcrypt" }
@@ -20,6 +21,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+jwtdecode = { group = "com.auth0.android", name = "jwtdecode", version.ref = "jwtdecode" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

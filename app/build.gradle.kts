@@ -39,6 +39,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     // bcrypt library
     implementation (libs.jbcrypt)
+    implementation(libs.jwtdecode)
     // Retrofit & Gson
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
