@@ -2,11 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:fillViewport="true"
+    android:padding="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <!-- Card for Charger Details -->
@@ -14,10 +16,10 @@
             android:id="@+id/cardChargerDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="6dp"
-            android:padding="16dp">
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp"
+            android:padding="28dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -29,24 +31,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Code: N/A"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="8dp"/>
 
                 <TextView
                     android:id="@+id/tvChargerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name: N/A"
-                    android:textSize="14sp"
-                    android:paddingTop="4dp"/>
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"/>
 
                 <TextView
                     android:id="@+id/tvChargerLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Location: N/A"
-                    android:textSize="14sp"
-                    android:paddingTop="2dp"/>
+                    android:textSize="16sp"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -58,13 +60,16 @@
             android:text="Select Charger"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:paddingBottom="4dp"/>
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"/>
 
         <Spinner
             android:id="@+id/spinnerChargers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
 
         <!-- Date Section -->
         <TextView
@@ -74,13 +79,14 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:paddingTop="16dp"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
 
             <TextView
                 android:id="@+id/tvSelectedDate"
@@ -89,15 +95,16 @@
                 android:layout_weight="1"
                 android:text="N/A"
                 android:textSize="16sp"
-                android:padding="8dp"/>
+                android:padding="12dp"/>
 
             <ImageButton
                 android:id="@+id/btnPickDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_my_calendar"
-                android:contentDescription="Pick Date"/>
+                android:contentDescription="Pick Date"
+                android:padding="8dp"/>
         </LinearLayout>
 
         <!-- Slot Label -->
@@ -108,21 +115,25 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:paddingTop="16dp"
-            android:paddingBottom="4dp"/>
+            android:paddingBottom="8dp"/>
 
         <Spinner
             android:id="@+id/spinnerSlots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"/>
 
         <!-- Create Booking Button -->
         <Button
             android:id="@+id/btnCreateBooking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Create Booking"/>
+            android:layout_marginTop="16dp"
+            android:text="Create Booking"
+            android:padding="12dp"/>
     </LinearLayout>
 </ScrollView>
+
 

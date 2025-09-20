@@ -42,10 +42,10 @@ public class ProfileFragment extends Fragment {
         if (token != null) {
             UserInfo user = JwtUtils.extractUserInfo(token);
 
-            tvName.setText("Name: " + user.name);
-            tvNic.setText("NIC: " + user.nic);
-            tvEmail.setText("Email: " + user.email);
-            tvRole.setText("Role: " + user.role);
+            tvName.setText(user.name);
+            tvNic.setText(user.nic);
+            tvEmail.setText(user.email);
+            tvRole.setText(user.role);
         }
 
         btnLogout.setOnClickListener(v -> {

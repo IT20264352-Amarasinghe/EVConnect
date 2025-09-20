@@ -68,7 +68,16 @@ public class CreateBookingFragment extends Fragment {
         spinnerChargers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedCharger = chargerList.get(position);
+                if (position == 0) {
+                    // Placeholder selected → clear card
+                    tvChargerCode.setText("Code: N/A");
+                    tvChargerName.setText("Name: N/A");
+                    tvChargerLocation.setText("Location: N/A");
+                    selectedCharger = null;
+                    return;
+                }
+                // Adjust position by -1 because of the placeholder
+                selectedCharger = chargerList.get(position - 1);
                 // Update Card
                 tvChargerCode.setText("Code: " + selectedCharger.getCode());
                 tvChargerName.setText("Name: " + selectedCharger.getCode() +"-"+ selectedCharger.getLocation() );
@@ -118,6 +127,8 @@ public class CreateBookingFragment extends Fragment {
                     chargerList = response.body();
 
                     List<String> chargerNames = new ArrayList<>();
+                    // Add a placeholder at the start
+                    chargerNames.add("Select Charger");
                     for (Charger c : chargerList) {
                         chargerNames.add(c.getCode() + " - " + c.getLocation());
                     }
