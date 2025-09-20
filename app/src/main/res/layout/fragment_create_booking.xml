@@ -1,57 +1,128 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    android:padding="16dp">
 
-    <!-- Charger Label -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Charger"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingBottom="4dp"
-        android:gravity="start" />
+        android:orientation="vertical">
 
+        <!-- Card for Charger Details -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardChargerDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:padding="16dp">
 
-    <Spinner
-        android:id="@+id/spinnerChargers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnPickDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Date"
-        android:layout_marginTop="16dp"/>
+                <TextView
+                    android:id="@+id/tvChargerCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Code: N/A"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
 
+                <TextView
+                    android:id="@+id/tvChargerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name: N/A"
+                    android:textSize="14sp"
+                    android:paddingTop="4dp"/>
 
-    <!-- Slot Label -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Select Slot"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="16dp"
-        android:paddingBottom="4dp"
-        android:gravity="start" />
+                <TextView
+                    android:id="@+id/tvChargerLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location: N/A"
+                    android:textSize="14sp"
+                    android:paddingTop="2dp"/>
 
-    <Spinner
-        android:id="@+id/spinnerSlots"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-    <!-- Button -->
-    <Button
-        android:id="@+id/btnCreateBooking"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Create Booking"/>
-</LinearLayout>
+        <!-- Charger Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Charger"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerChargers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"/>
+
+        <!-- Date Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvSelectedDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="N/A"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <ImageButton
+                android:id="@+id/btnPickDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_my_calendar"
+                android:contentDescription="Pick Date"/>
+        </LinearLayout>
+
+        <!-- Slot Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Slot"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerSlots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"/>
+
+        <!-- Create Booking Button -->
+        <Button
+            android:id="@+id/btnCreateBooking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Create Booking"/>
+    </LinearLayout>
+</ScrollView>
+

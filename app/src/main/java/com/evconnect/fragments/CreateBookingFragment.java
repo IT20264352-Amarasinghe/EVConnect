@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,9 @@ import retrofit2.Response;
 public class CreateBookingFragment extends Fragment {
 
     private Spinner spinnerChargers, spinnerSlots;
-    private Button btnCreateBooking, btnPickDate;
+    private Button btnCreateBooking;
+    private ImageButton btnPickDate;
+    private TextView tvChargerCode, tvChargerName, tvChargerLocation, tvSelectedDate;
     private List<Charger> chargerList = new ArrayList<>();
     private List<Slot> slotList = new ArrayList<>();
     private Charger selectedCharger;
@@ -55,12 +58,22 @@ public class CreateBookingFragment extends Fragment {
         btnCreateBooking = view.findViewById(R.id.btnCreateBooking);
         btnPickDate = view.findViewById(R.id.btnPickDate);
 
+        tvChargerCode = view.findViewById(R.id.tvChargerCode);
+        tvChargerName = view.findViewById(R.id.tvChargerName);
+        tvChargerLocation = view.findViewById(R.id.tvChargerLocation);
+        tvSelectedDate = view.findViewById(R.id.tvSelectedDate);
+
         loadChargers();
 
         spinnerChargers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedCharger = chargerList.get(position);
+                // Update Card
+                tvChargerCode.setText("Code: " + selectedCharger.getCode());
+                tvChargerName.setText("Name: " + selectedCharger.getCode() +"-"+ selectedCharger.getLocation() );
+                tvChargerLocation.setText("Location: " + selectedCharger.getLocation());
+
                 if (selectedDate != null) {
                     loadSlots(selectedCharger.getId(), selectedDate);
                 }
@@ -87,6 +100,7 @@ public class CreateBookingFragment extends Fragment {
         DatePickerDialog datePicker = new DatePickerDialog(getContext(),
                 (view, year, month, dayOfMonth) -> {
                     selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
+                    tvSelectedDate.setText(selectedDate);
                     if (selectedCharger != null) {
                         loadSlots(selectedCharger.getId(), selectedDate);
                     }
