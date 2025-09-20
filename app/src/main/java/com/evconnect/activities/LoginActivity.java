@@ -39,6 +39,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         tokenManager = new TokenManager(this);
 
+        // 🔹 1. Check if token exists and is still valid
+        String savedToken = tokenManager.getToken();
+        if (savedToken != null && !tokenManager.isTokenExpired(savedToken)) {
+            // Token is valid → skip login
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return; // exit onCreate
+        }
+
         // Initialize UI elements by finding them by their IDs from the layout file.
         etNic = findViewById(R.id.etNic);
         etPassword = findViewById(R.id.etPassword);
