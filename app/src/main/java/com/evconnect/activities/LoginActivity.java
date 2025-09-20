@@ -3,6 +3,7 @@ package com.evconnect.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -64,16 +65,22 @@ public class LoginActivity extends AppCompatActivity {
             String nic = etNic.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
+            btnLogin.setEnabled(false);
+            btnLogin.setText("");
+            findViewById(R.id.progressLogin).setVisibility(View.VISIBLE);
+
             // Check if NIC or password is empty
             if (nic.isEmpty()) {
                 etNic.setError("NIC is required");
                 etNic.requestFocus();
+                resetLoginUI();
                 return;
             }
 
             if (password.isEmpty()) {
                 etPassword.setError("Password is required");
                 etPassword.requestFocus();
+                resetLoginUI();
                 return;
             }
 
@@ -81,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             checkServerLogin(nic, password, new ServerLoginCallback() {
                 @Override
                 public void onSuccess(String token) {
+                    resetLoginUI();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     Toast.makeText(LoginActivity.this, "Login Successful (Server)!", Toast.LENGTH_SHORT).show();
@@ -91,11 +99,13 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure() {
                     // 🔹 If server login fails, try offline login
                     if (userDao.loginUser(nic, password)) {
+                        resetLoginUI();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         Toast.makeText(LoginActivity.this, "Login Successful (Offline)!", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
+                        resetLoginUI();
                         Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -140,5 +150,11 @@ public class LoginActivity extends AppCompatActivity {
                 callback.onFailure();
             }
         });
+    }
+
+    private void resetLoginUI() {
+        btnLogin.setEnabled(true);
+        btnLogin.setText("Login");
+        findViewById(R.id.progressLogin).setVisibility(View.GONE);
     }
 }
