@@ -1,51 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:padding="12dp"
-    android:elevation="4dp"
-    android:background="?attr/colorSurface">
+    android:layout_margin="12dp"
+    android:padding="16dp"
+    android:backgroundTint="?attr/colorSurface"
+    android:elevation="8dp"
+    android:clipToOutline="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraLarge">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tv_charger_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Charger Code"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:paddingBottom="4dp"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/tv_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location" />
+            android:text="Location"
+            android:textSize="14sp"
+            android:paddingBottom="6dp"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Slot Date" />
+            android:text="Slot Date"
+            android:textSize="14sp"
+            android:paddingBottom="4dp"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start - End Time" />
+            android:text="Start - End Time"
+            android:textSize="14sp"
+            android:paddingBottom="4dp"
+            android:textColor="@android:color/black"/>
 
         <TextView
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status" />
+            android:text="Status"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_green_dark"
+            android:paddingBottom="6dp" />
 
         <TextView
             android:id="@+id/tv_created_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Created At" />
+            android:text="Created At"
+            android:textSize="12sp"
+            android:textColor="@android:color/black" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
+
