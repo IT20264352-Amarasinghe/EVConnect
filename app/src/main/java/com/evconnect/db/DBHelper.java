@@ -23,6 +23,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_PASSWORD = "password";
     public static final String COL_STATUS = "status";
 
+    // Booking Table
+    public static final String TABLE_BOOKING = "booking";
+    public static final String COL_BOOKING_ID = "id";
+    public static final String COL_BOOKING_CUSTOMER_NIC = "customerNic";
+    public static final String COL_BOOKING_CHARGER_ID = "chargerId";
+    public static final String COL_BOOKING_SLOT_ID = "slotId";
+    public static final String COL_BOOKING_CREATED_AT = "createdAt";
+    public static final String COL_BOOKING_UPDATED_AT = "updatedAt";
+    public static final String COL_BOOKING_STATUS = "status";
+
     // Define the SQL query to create the user table.
     private static final String CREATE_TABLE_USER =
             "CREATE TABLE " + TABLE_USER + " (" +
@@ -35,6 +45,17 @@ public class DBHelper extends SQLiteOpenHelper {
                     // Status column with a check constraint to ensure values are either 'ACTIVE' or 'DEACTIVATED'.
                     // 'ACTIVE' is the default value for new users.
                     COL_STATUS + " TEXT CHECK(" + COL_STATUS + " IN ('ACTIVE','DEACTIVATED')) DEFAULT 'ACTIVE')";
+
+    // Define the SQL query to create the booking table.
+    private static final String CREATE_TABLE_BOOKING =
+            "CREATE TABLE " + TABLE_BOOKING + " (" +
+                    COL_BOOKING_ID + " TEXT PRIMARY KEY, " +
+                    COL_BOOKING_CUSTOMER_NIC + " TEXT, " +
+                    COL_BOOKING_CHARGER_ID + " TEXT, " +
+                    COL_BOOKING_SLOT_ID + " TEXT, " +
+                    COL_BOOKING_CREATED_AT + " TEXT, " +
+                    COL_BOOKING_UPDATED_AT + " TEXT, " +
+                    COL_BOOKING_STATUS + " TEXT)";
 
     /**
      * Constructor for DBHelper.
@@ -55,6 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Execute the SQL statement to create the user table.
         db.execSQL(CREATE_TABLE_USER);
+        db.execSQL(CREATE_TABLE_BOOKING);
     }
 
     /**

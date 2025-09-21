@@ -19,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.evconnect.R;
+import com.evconnect.db.BookingDao;
+import com.evconnect.db.DBHelper;
 import com.evconnect.models.BookingRequest;
 import com.evconnect.models.BookingResponse;
 import com.evconnect.models.Charger;
@@ -226,7 +228,11 @@ public class CreateBookingFragment extends Fragment {
         apiService.createBooking(bookingRequest).enqueue(new Callback<BookingResponse>() {
             @Override
             public void onResponse(Call<BookingResponse> call, Response<BookingResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    BookingResponse bookingResponse = response.body();
+                    // Saving booking locally after API success
+                    BookingDao bookingDao = new BookingDao(getContext());
+                    bookingDao.insertBooking(bookingResponse);
                     Toast.makeText(getContext(), "Booking Created!", Toast.LENGTH_SHORT).show();
                 } else {
                     String errorMessage = ApiErrorUtils.getErrorMessage(response);
