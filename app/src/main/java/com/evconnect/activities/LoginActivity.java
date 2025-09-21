@@ -89,6 +89,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(String token) {
                     tokenManager.setOffline(false);
+                    // Save current user's NIC
+                    tokenManager.setCurrentUserNic(nic);
                     resetLoginUI();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);

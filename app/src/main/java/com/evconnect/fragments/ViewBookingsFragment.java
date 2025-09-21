@@ -3,6 +3,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.evconnect.R;
 import com.evconnect.adapter.BookingAdapter;
+import com.evconnect.db.BookingDao;
+import com.evconnect.db.UserDao;
 import com.evconnect.models.Booking;
 import com.evconnect.models.UserInfo;
 import com.evconnect.network.ApiClient;
@@ -35,6 +38,7 @@ public class ViewBookingsFragment extends Fragment {
     private BookingAdapter adapter;
     private List<Booking> bookingList = new ArrayList<>();
     private TokenManager tokenManager ;
+    private TextView offlineWarning;
     UserInfo user;
 
     @Nullable
@@ -48,10 +52,24 @@ public class ViewBookingsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new BookingAdapter(bookingList);
         recyclerView.setAdapter(adapter);
-        tokenManager = new TokenManager(getContext());
+        offlineWarning = view.findViewById(R.id.offlineWarning);
+        tokenManager = new TokenManager(requireContext());
         String token = tokenManager.getToken();
 
-        user = JwtUtils.extractUserInfo(token);;
+        if(token != null){
+            user = JwtUtils.extractUserInfo(token);
+        }else{
+            String currentNic = tokenManager.getCurrentUserNic();
+            if (currentNic != null) {
+                UserDao userDao = new UserDao(requireContext());
+                user = userDao.getUserByNic(currentNic);
+                if(user == null){
+                    Toast.makeText(getContext(), "User not found on offline. Please login using internet.", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(getContext(), "Please login with internet. User name not found", Toast.LENGTH_SHORT).show();
+            }
+        }
 
         fetchBookings();
 
@@ -64,6 +82,7 @@ public class ViewBookingsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Booking>> call, Response<List<Booking>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    offlineWarning.setVisibility(View.GONE);
                     bookingList.clear();
                     bookingList.addAll(response.body());
                     adapter.notifyDataSetChanged();
@@ -74,7 +93,21 @@ public class ViewBookingsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Booking>> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to fetch bookings", Toast.LENGTH_SHORT).show();
+                // Show offline warning
+                offlineWarning.setVisibility(View.VISIBLE);
+                Toast.makeText(getContext(), "Failed to fetch from server. Loading offline data...", Toast.LENGTH_SHORT).show();
+
+                // ✅ Load from local DB
+                BookingDao bookingDao = new BookingDao(requireContext());
+                List<Booking> localBookings = bookingDao.getBookingsByCustomerNic(user.getNic());
+
+                if (!localBookings.isEmpty()) {
+                    bookingList.clear();
+                    bookingList.addAll(localBookings);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "No offline bookings found", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

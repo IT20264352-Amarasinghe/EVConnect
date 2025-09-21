@@ -21,8 +21,8 @@ import androidx.fragment.app.Fragment;
 import com.evconnect.R;
 import com.evconnect.db.BookingDao;
 import com.evconnect.db.DBHelper;
+import com.evconnect.models.Booking;
 import com.evconnect.models.BookingRequest;
-import com.evconnect.models.BookingResponse;
 import com.evconnect.models.Charger;
 import com.evconnect.models.Slot;
 import com.evconnect.models.UserInfo;
@@ -73,7 +73,7 @@ public class CreateBookingFragment extends Fragment {
         tokenManager = new TokenManager(getContext());
         String token = tokenManager.getToken();
         offlineWarning = view.findViewById(R.id.offlineWarning);
-        if (tokenManager.isOffline() ){
+        if (tokenManager.isOffline() || token == null){
             offlineWarning.setVisibility(View.VISIBLE);
             // Disable booking actions
             return view;
@@ -177,6 +177,7 @@ public class CreateBookingFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Slot>> call, Response<List<Slot>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    offlineWarning.setVisibility(View.GONE);
                     slotList = response.body();
 
                     List<String> slotStrings = new ArrayList<>();
@@ -225,11 +226,12 @@ public class CreateBookingFragment extends Fragment {
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         BookingRequest bookingRequest = new BookingRequest(customerNic, chargerCode, slotId);
 
-        apiService.createBooking(bookingRequest).enqueue(new Callback<BookingResponse>() {
+        apiService.createBooking(bookingRequest).enqueue(new Callback<Booking>() {
             @Override
-            public void onResponse(Call<BookingResponse> call, Response<BookingResponse> response) {
+            public void onResponse(Call<Booking> call, Response<Booking> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    BookingResponse bookingResponse = response.body();
+                    offlineWarning.setVisibility(View.GONE);
+                    Booking bookingResponse = response.body();
                     // Saving booking locally after API success
                     BookingDao bookingDao = new BookingDao(getContext());
                     bookingDao.insertBooking(bookingResponse);
@@ -241,7 +243,8 @@ public class CreateBookingFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<BookingResponse> call, Throwable t) {
+            public void onFailure(Call<Booking> call, Throwable t) {
+                offlineWarning.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

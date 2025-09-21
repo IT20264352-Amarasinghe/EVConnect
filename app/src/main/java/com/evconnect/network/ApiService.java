@@ -2,7 +2,6 @@ package com.evconnect.network;
 
 import com.evconnect.models.Booking;
 import com.evconnect.models.BookingRequest;
-import com.evconnect.models.BookingResponse;
 import com.evconnect.models.Charger;
 import com.evconnect.models.LoginRequest;
 import com.evconnect.models.LoginResponse;
@@ -30,7 +29,7 @@ public interface ApiService {
     Call<List<Charger>> getChargers();
 
     @POST("bookings")
-    Call<BookingResponse> createBooking(@Body BookingRequest request);
+    Call<Booking> createBooking(@Body BookingRequest request);
 
     @GET("slots/{chargerId}")
     Call<List<Slot>> getSlots(@Path("chargerId") String chargerId,

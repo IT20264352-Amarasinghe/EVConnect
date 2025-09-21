@@ -10,6 +10,7 @@ public class TokenManager {
     private static final String PREFS_NAME = "MyAppPrefs";
     private static final String KEY_TOKEN = "jwt_token";
     private static final String KEY_IS_OFFLINE = "IS_OFFLINE";
+    private static final String KEY_CURRENT_USER_NIC = "current_user_nic";
 
     private final SharedPreferences sharedPreferences;
 
@@ -72,5 +73,17 @@ public class TokenManager {
 
     public boolean isOffline() {
         return sharedPreferences.getBoolean(KEY_IS_OFFLINE, false);
+    }
+
+    // Save current user's NIC
+    public void setCurrentUserNic(String nic) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_CURRENT_USER_NIC, nic);
+        editor.apply();
+    }
+
+    // Get current user's NIC
+    public String getCurrentUserNic() {
+        return sharedPreferences.getString(KEY_CURRENT_USER_NIC, null);
     }
 }

@@ -25,13 +25,24 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Booking Table
     public static final String TABLE_BOOKING = "booking";
+    // Common Booking fields
     public static final String COL_BOOKING_ID = "id";
     public static final String COL_BOOKING_CUSTOMER_NIC = "customerNic";
-    public static final String COL_BOOKING_CHARGER_ID = "chargerId";
-    public static final String COL_BOOKING_SLOT_ID = "slotId";
     public static final String COL_BOOKING_CREATED_AT = "createdAt";
     public static final String COL_BOOKING_UPDATED_AT = "updatedAt";
     public static final String COL_BOOKING_STATUS = "status";
+
+    // Charger fields
+    public static final String COL_BOOKING_CHARGER_ID = "chargerId";
+    public static final String COL_BOOKING_CHARGER_CODE = "chargerCode";
+    public static final String COL_BOOKING_CHARGER_LOCATION = "chargerLocation";
+
+    // Slot fields
+    public static final String COL_BOOKING_SLOT_ID = "slotId";
+    public static final String COL_BOOKING_SLOT_DATE = "slotDate";
+    public static final String COL_BOOKING_SLOT_START_TIME = "slotStartTime";
+    public static final String COL_BOOKING_SLOT_END_TIME = "slotEndTime";
+    public static final String COL_BOOKING_SLOT_STATUS = "slotStatus";
 
     // Define the SQL query to create the user table.
     private static final String CREATE_TABLE_USER =
@@ -52,10 +63,17 @@ public class DBHelper extends SQLiteOpenHelper {
                     COL_BOOKING_ID + " TEXT PRIMARY KEY, " +
                     COL_BOOKING_CUSTOMER_NIC + " TEXT, " +
                     COL_BOOKING_CHARGER_ID + " TEXT, " +
+                    COL_BOOKING_CHARGER_CODE + " TEXT, " +
+                    COL_BOOKING_CHARGER_LOCATION + " TEXT, " +
                     COL_BOOKING_SLOT_ID + " TEXT, " +
+                    COL_BOOKING_SLOT_DATE + " TEXT, " +
+                    COL_BOOKING_SLOT_START_TIME + " TEXT, " +
+                    COL_BOOKING_SLOT_END_TIME + " TEXT, " +
+                    COL_BOOKING_SLOT_STATUS + " TEXT, " +
                     COL_BOOKING_CREATED_AT + " TEXT, " +
                     COL_BOOKING_UPDATED_AT + " TEXT, " +
-                    COL_BOOKING_STATUS + " TEXT)";
+                    COL_BOOKING_STATUS + " TEXT" +
+                    ")";
 
     /**
      * Constructor for DBHelper.

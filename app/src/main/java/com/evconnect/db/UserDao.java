@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.evconnect.models.User;
+import com.evconnect.models.UserInfo;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -86,5 +89,37 @@ public class UserDao {
         db.close();
         // Return the login status.
         return loggedIn;
+    }
+
+    /**
+     * Fetches a user from the database by NIC.
+     * @param nic The user's NIC.
+     * @return A User object if found, otherwise null.
+     */
+    public UserInfo getUserByNic(String nic) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                DBHelper.TABLE_USER,
+                null, // all columns
+                DBHelper.COL_NIC + "=?",
+                new String[]{nic},
+                null, null, null
+        );
+
+        UserInfo user = null;
+        if (cursor.moveToFirst()) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_NAME));
+            String email = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_EMAIL));
+            String phone = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PHONE));
+            String role = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_ROLE));
+            String status = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_STATUS));
+
+            user = new UserInfo(name, nic, email, role);
+        }
+
+        cursor.close();
+        db.close();
+        return user;
     }
 }
