@@ -1,5 +1,6 @@
 package com.evconnect.network;
 
+import com.evconnect.models.Booking;
 import com.evconnect.models.BookingRequest;
 import com.evconnect.models.BookingResponse;
 import com.evconnect.models.Charger;
@@ -34,4 +35,7 @@ public interface ApiService {
     @GET("slots/{chargerId}")
     Call<List<Slot>> getSlots(@Path("chargerId") String chargerId,
                               @Query("date") String date);
+
+    @GET("bookings")
+    Call<List<Booking>> getBookings(@Query("customerNic") String customerNic);
 }
