@@ -88,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             checkServerLogin(nic, password, new ServerLoginCallback() {
                 @Override
                 public void onSuccess(String token) {
+                    tokenManager.setOffline(false);
                     resetLoginUI();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -99,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure() {
                     // 🔹 If server login fails, try offline login
                     if (userDao.loginUser(nic, password)) {
-                        tokenManager.clearToken();
+                        tokenManager.setOffline(true);
                         resetLoginUI();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);

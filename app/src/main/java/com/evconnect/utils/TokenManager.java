@@ -9,6 +9,7 @@ import org.json.JSONObject;
 public class TokenManager {
     private static final String PREFS_NAME = "MyAppPrefs";
     private static final String KEY_TOKEN = "jwt_token";
+    private static final String KEY_IS_OFFLINE = "IS_OFFLINE";
 
     private final SharedPreferences sharedPreferences;
 
@@ -60,5 +61,16 @@ public class TokenManager {
             e.printStackTrace();
             return true;
         }
+    }
+
+    // Offline flag methods
+    public void setOffline(boolean isOffline) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_IS_OFFLINE, isOffline);
+        editor.apply();
+    }
+
+    public boolean isOffline() {
+        return sharedPreferences.getBoolean(KEY_IS_OFFLINE, false);
     }
 }

@@ -43,6 +43,7 @@ public class CreateBookingFragment extends Fragment {
     private Spinner spinnerChargers, spinnerSlots;
     private Button btnCreateBooking;
     private ImageButton btnPickDate;
+    private TextView offlineWarning;
     private TextView tvChargerCode, tvChargerName, tvChargerLocation, tvSelectedDate;
     private List<Charger> chargerList = new ArrayList<>();
     private List<Slot> slotList = new ArrayList<>();
@@ -69,8 +70,8 @@ public class CreateBookingFragment extends Fragment {
 
         tokenManager = new TokenManager(getContext());
         String token = tokenManager.getToken();
-        TextView offlineWarning = view.findViewById(R.id.offlineWarning);
-        if (token == null ){
+        offlineWarning = view.findViewById(R.id.offlineWarning);
+        if (tokenManager.isOffline() ){
             offlineWarning.setVisibility(View.VISIBLE);
             // Disable booking actions
             return view;
@@ -162,6 +163,7 @@ public class CreateBookingFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Charger>> call, Throwable t) {
+                offlineWarning.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Charger Loading Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -211,6 +213,7 @@ public class CreateBookingFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Slot>> call, Throwable t) {
+                offlineWarning.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "LoadSlots Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
