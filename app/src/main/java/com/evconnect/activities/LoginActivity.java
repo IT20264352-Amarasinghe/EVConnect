@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onFailure() {
                     // 🔹 If server login fails, try offline login
                     if (userDao.loginUser(nic, password)) {
+                        tokenManager.clearToken();
                         resetLoginUI();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);

@@ -51,7 +51,11 @@ public class TokenManager {
             long exp = json.getLong("exp"); // exp in seconds
             long now = System.currentTimeMillis() / 1000;
 
-            return now >= exp;
+            boolean isExpired = now >= exp;
+            if(isExpired){
+                clearToken();
+            }
+            return isExpired;
         } catch (Exception e) {
             e.printStackTrace();
             return true;

@@ -72,6 +72,16 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <TextView
+            android:id="@+id/offlineWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFCC00"
+            android:textColor="#000"
+            android:padding="8dp"
+            android:text="⚠️ Offline mode: You cannot create bookings"
+            android:visibility="gone" />
+
         <!-- Charger Label -->
         <TextView
             android:layout_width="match_parent"

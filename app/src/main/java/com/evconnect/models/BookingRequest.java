@@ -2,12 +2,12 @@ package com.evconnect.models;
 
 public class BookingRequest {
     private String customerNic;
-    private String chargerCode;
+    private String chargerId;
     private String slotId;
 
-    public BookingRequest(String customerNic, String chargerCode, String slotId) {
+    public BookingRequest(String customerNic, String chargerId, String slotId) {
         this.customerNic = customerNic;
-        this.chargerCode = chargerCode;
+        this.chargerId = chargerId;
         this.slotId = slotId;
     }
 
@@ -19,12 +19,12 @@ public class BookingRequest {
         this.customerNic = customerNic;
     }
 
-    public String getChargerCode() {
-        return chargerCode;
+    public String getChargerId() {
+        return chargerId;
     }
 
-    public void setChargerCode(String chargerCode) {
-        this.chargerCode = chargerCode;
+    public void setChargerId(String chargerId) {
+        this.chargerId = chargerId;
     }
 
     public String getSlotId() {

@@ -23,9 +23,12 @@ import com.evconnect.models.BookingRequest;
 import com.evconnect.models.BookingResponse;
 import com.evconnect.models.Charger;
 import com.evconnect.models.Slot;
+import com.evconnect.models.UserInfo;
 import com.evconnect.network.ApiClient;
 import com.evconnect.network.ApiService;
 import com.evconnect.utils.ApiErrorUtils;
+import com.evconnect.utils.JwtUtils;
+import com.evconnect.utils.TokenManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +49,7 @@ public class CreateBookingFragment extends Fragment {
     private Charger selectedCharger;
     private Slot selectedSlot;
     private String selectedDate; // yyyy-MM-dd
+    private TokenManager tokenManager ;
 
     @Nullable
     @Override
@@ -62,6 +66,19 @@ public class CreateBookingFragment extends Fragment {
         tvChargerName = view.findViewById(R.id.tvChargerName);
         tvChargerLocation = view.findViewById(R.id.tvChargerLocation);
         tvSelectedDate = view.findViewById(R.id.tvSelectedDate);
+
+        tokenManager = new TokenManager(getContext());
+        String token = tokenManager.getToken();
+        TextView offlineWarning = view.findViewById(R.id.offlineWarning);
+        if (token == null ){
+            offlineWarning.setVisibility(View.VISIBLE);
+            // Disable booking actions
+            return view;
+        }else{
+            offlineWarning.setVisibility(View.GONE);
+        }
+
+        UserInfo user = JwtUtils.extractUserInfo(token);;
 
         loadChargers();
 
@@ -97,7 +114,7 @@ public class CreateBookingFragment extends Fragment {
             int slotIndex = spinnerSlots.getSelectedItemPosition();
             if (slotIndex >= 0 && slotIndex < slotList.size()) {
                 selectedSlot = slotList.get(slotIndex);
-                createBooking("123V", selectedCharger.getCode(), selectedSlot.getId());
+                createBooking(user.getNic(), selectedCharger.getId(), selectedSlot.getId());
             }
         });
 
