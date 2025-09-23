@@ -3,6 +3,7 @@ package com.evconnect.fragments;
 import static java.security.AccessController.getContext;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,8 +20,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.evconnect.R;
+import com.evconnect.activities.LoginActivity;
+import com.evconnect.activities.MainActivity;
 import com.evconnect.db.BookingDao;
 import com.evconnect.db.DBHelper;
 import com.evconnect.models.Booking;
@@ -33,6 +37,7 @@ import com.evconnect.network.ApiService;
 import com.evconnect.utils.ApiErrorUtils;
 import com.evconnect.utils.JwtUtils;
 import com.evconnect.utils.TokenManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -182,6 +187,22 @@ public class CreateBookingFragment extends Fragment {
                     offlineWarning.setVisibility(View.GONE);
                     slotList = response.body();
 
+                    if (slotList.isEmpty()) {
+                        // No slots case
+                        List<String> noSlots = new ArrayList<>();
+                        noSlots.add("No slots available");
+
+                        ArrayAdapter<String> slotAdapter = new ArrayAdapter<>(
+                                getContext(),
+                                android.R.layout.simple_spinner_item,
+                                noSlots
+                        );
+                        slotAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerSlots.setAdapter(slotAdapter);
+                        spinnerSlots.setEnabled(false); // disable selection
+                        return;
+                    }
+
                     List<String> slotStrings = new ArrayList<>();
                     for (Slot s : slotList) {
                         slotStrings.add(s.getStartTime() + " - " + s.getEndTime() +
@@ -210,6 +231,7 @@ public class CreateBookingFragment extends Fragment {
 
                     slotAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerSlots.setAdapter(slotAdapter);
+                    spinnerSlots.setEnabled(true);
                 }else{
                     String errorMessage = ApiErrorUtils.getErrorMessage(response);
                     Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
@@ -238,6 +260,16 @@ public class CreateBookingFragment extends Fragment {
                     BookingDao bookingDao = new BookingDao(getContext());
                     bookingDao.insertBooking(bookingResponse);
                     Toast.makeText(getContext(), "Booking Created!", Toast.LENGTH_SHORT).show();
+                    // Update bottom navigation selected item
+                    BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
+                    bottomNav.setSelectedItemId(R.id.nav_view_bookings);
+
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, new ViewBookingsFragment()) // container where fragments are shown
+                            .addToBackStack(null) // so you can press back to return
+                            .commit();
+
                 } else {
                     String errorMessage = ApiErrorUtils.getErrorMessage(response);
                     Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
