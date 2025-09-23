@@ -1,5 +1,7 @@
 package com.evconnect.activities;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             // Call backend
-            ApiService apiService = ApiClient.getClient().create(ApiService.class);
+            ApiService apiService = ApiClient.getClient(RegisterActivity.this).create(ApiService.class);
             RegistrationRequest request = new RegistrationRequest(nic, name, email, phone, "customer" ,password);
 
             apiService.register(request).enqueue(new Callback<RegistrationResponse>() {

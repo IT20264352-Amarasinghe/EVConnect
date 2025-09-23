@@ -19,10 +19,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
-    @POST("users/login")
+    @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);
 
-    @POST("users/register")
+    @POST("auth/register")
     Call<RegistrationResponse> register(@Body RegistrationRequest request);
 
     @GET("chargers")

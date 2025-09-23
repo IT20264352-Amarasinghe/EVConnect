@@ -11,7 +11,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Define constants for the database name and version.
     public static final String DATABASE_NAME = "ev_connect.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     // Define constants for the table and column names to avoid typos.
     public static final String TABLE_USER = "user";

@@ -1,5 +1,7 @@
 package com.evconnect.activities;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -126,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkServerLogin(String nic, String password, ServerLoginCallback callback) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(LoginActivity.this).create(ApiService.class);
 
         LoginRequest request = new LoginRequest(nic, password);
 

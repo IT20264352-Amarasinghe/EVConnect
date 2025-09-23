@@ -1,4 +1,6 @@
 package com.evconnect.fragments;
+import static java.security.AccessController.getContext;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +79,7 @@ public class ViewBookingsFragment extends Fragment {
     }
 
     private void fetchBookings() {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getContext()).create(ApiService.class);
         apiService.getBookings(user.getNic()).enqueue(new Callback<List<Booking>>() {
             @Override
             public void onResponse(Call<List<Booking>> call, Response<List<Booking>> response) {

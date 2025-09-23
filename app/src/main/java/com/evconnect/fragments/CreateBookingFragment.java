@@ -1,5 +1,7 @@
 package com.evconnect.fragments;
 
+import static java.security.AccessController.getContext;
+
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -139,7 +141,7 @@ public class CreateBookingFragment extends Fragment {
     }
 
     private void loadChargers() {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getContext()).create(ApiService.class);
         apiService.getChargers().enqueue(new Callback<List<Charger>>() {
             @Override
             public void onResponse(Call<List<Charger>> call, Response<List<Charger>> response) {
@@ -172,7 +174,7 @@ public class CreateBookingFragment extends Fragment {
     }
 
     private void loadSlots(String chargerId, String date) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getContext()).create(ApiService.class);
         apiService.getSlots(chargerId, date).enqueue(new Callback<List<Slot>>() {
             @Override
             public void onResponse(Call<List<Slot>> call, Response<List<Slot>> response) {
@@ -223,7 +225,7 @@ public class CreateBookingFragment extends Fragment {
     }
 
     private void createBooking(String customerNic, String chargerCode, String slotId) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getContext()).create(ApiService.class);
         BookingRequest bookingRequest = new BookingRequest(customerNic, chargerCode, slotId);
 
         apiService.createBooking(bookingRequest).enqueue(new Callback<Booking>() {
