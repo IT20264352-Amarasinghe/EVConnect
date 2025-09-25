@@ -116,6 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
+            setRegisterLoading(true);
             // Call backend
             ApiService apiService = ApiClient.getClient(RegisterActivity.this).create(ApiService.class);
             RegistrationRequest request = new RegistrationRequest(nic, name, email, phone, "customer" ,password);
@@ -123,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
             apiService.register(request).enqueue(new Callback<RegistrationResponse>() {
                 @Override
                 public void onResponse(Call<RegistrationResponse> call, Response<RegistrationResponse> response) {
+                    setRegisterLoading(false);
                     if (response.isSuccessful() && response.body() != null) {
                         RegistrationResponse registeredUser = response.body();
                         // Save user locally
@@ -157,6 +159,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<RegistrationResponse> call, Throwable t) {
+                    setRegisterLoading(false);
                     Log.e("RegisterActivity", "Error: " + t);
                     Toast.makeText(RegisterActivity.this, "Server error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -170,5 +173,17 @@ public class RegisterActivity extends AppCompatActivity {
             // Finish the current activity.
             finish();
         });
+    }
+
+    private void setRegisterLoading(boolean isLoading) {
+        if (isLoading) {
+            btnRegister.setEnabled(false);
+            btnRegister.setText("");
+            findViewById(R.id.progressRegister).setVisibility(View.VISIBLE);
+        } else {
+            btnRegister.setEnabled(true);
+            btnRegister.setText("Register");
+            findViewById(R.id.progressRegister).setVisibility(View.GONE);
+        }
     }
 }

@@ -167,13 +167,25 @@
 
 
         <!-- Buttons -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegister"
-            style="@style/Widget.MaterialComponents.Button"
+        <FrameLayout
             android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Register"/>
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegister"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Register"/>
+
+            <ProgressBar
+                android:id="@+id/progressRegister"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+        </FrameLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGoToLogin"
