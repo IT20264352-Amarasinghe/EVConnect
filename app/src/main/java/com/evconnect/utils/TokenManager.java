@@ -6,6 +6,11 @@ import android.util.Base64;
 
 import org.json.JSONObject;
 
+/**
+ * TokenManager is a utility class that acts as the central point for managing
+ * application-wide persistent data, primarily the JWT authentication token,
+ * using Android's SharedPreferences. It also handles basic token expiration checking.
+ */
 public class TokenManager {
     private static final String PREFS_NAME = "MyAppPrefs";
     private static final String KEY_TOKEN = "jwt_token";
@@ -16,6 +21,7 @@ public class TokenManager {
 
     // Constructor
     public TokenManager(Context context) {
+        // Retrieve the SharedPreferences instance named 'MyAppPrefs' in private mode.
         sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
@@ -44,6 +50,8 @@ public class TokenManager {
             String[] parts = token.split("\\.");
             if (parts.length != 3) return true; // invalid token
 
+            // The payload is the second part (index 1) and is Base64 encoded.
+            // Decode the payload part using URL-safe and no-padding/no-wrap flags.
             byte[] decodedBytes = Base64.decode(parts[1], Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
             String payload = new String(decodedBytes);
             JSONObject json = new JSONObject(payload);
@@ -53,7 +61,9 @@ public class TokenManager {
             long exp = json.getLong("exp"); // exp in seconds
             long now = System.currentTimeMillis() / 1000;
 
+            // Compare current time with expiration time.
             boolean isExpired = now >= exp;
+            // If the token is expired, remove it from storage immediately
             if(isExpired){
                 clearToken();
             }

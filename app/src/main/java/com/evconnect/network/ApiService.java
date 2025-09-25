@@ -18,6 +18,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+//ApiService is a Retrofit interface that defines the contract for all network
+// API calls related to authentication, charger management, and bookings.
 public interface ApiService {
     @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);

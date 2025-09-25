@@ -49,11 +49,13 @@ import retrofit2.Response;
 
 public class CreateBookingFragment extends Fragment {
 
+    // Declare UI components
     private Spinner spinnerChargers, spinnerSlots;
     private Button btnCreateBooking;
     private ImageButton btnPickDate;
     private TextView offlineWarning;
     private TextView tvChargerCode, tvChargerName, tvChargerLocation, tvSelectedDate;
+    // Declare data lists and selected items
     private List<Charger> chargerList = new ArrayList<>();
     private List<Slot> slotList = new ArrayList<>();
     private Charger selectedCharger;
@@ -61,6 +63,7 @@ public class CreateBookingFragment extends Fragment {
     private String selectedDate; // yyyy-MM-dd
     private TokenManager tokenManager ;
 
+    // Called to have the fragment instantiate its user interface view.
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -88,10 +91,12 @@ public class CreateBookingFragment extends Fragment {
             offlineWarning.setVisibility(View.GONE);
         }
 
+        // Extract user information from the JWT token
         UserInfo user = JwtUtils.extractUserInfo(token);;
 
         loadChargers();
 
+        // Set up the listener for the chargers spinner
         spinnerChargers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -131,6 +136,7 @@ public class CreateBookingFragment extends Fragment {
         return view;
     }
 
+    // Displays a DatePickerDialog to allow the user to select a date.
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePicker = new DatePickerDialog(getContext(),
@@ -145,6 +151,7 @@ public class CreateBookingFragment extends Fragment {
         datePicker.show();
     }
 
+    // Fetches the list of all chargers from the API.
     private void loadChargers() {
         ApiService apiService = ApiClient.getClient(getContext()).create(ApiService.class);
         apiService.getChargers().enqueue(new Callback<List<Charger>>() {
@@ -178,6 +185,7 @@ public class CreateBookingFragment extends Fragment {
         });
     }
 
+    // Fetches the available slots for a specific charger and date from the API.
     private void loadSlots(String chargerId, String date) {
         ApiService apiService = ApiClient.getClient(getContext()).create(ApiService.class);
         apiService.getSlots(chargerId, date).enqueue(new Callback<List<Slot>>() {
@@ -246,6 +254,7 @@ public class CreateBookingFragment extends Fragment {
         });
     }
 
+    // Creates a new booking by sending a request to the API.
     private void createBooking(String customerNic, String chargerCode, String slotId) {
         ApiService apiService = ApiClient.getClient(getContext()).create(ApiService.class);
         BookingRequest bookingRequest = new BookingRequest(customerNic, chargerCode, slotId);

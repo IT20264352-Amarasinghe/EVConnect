@@ -15,12 +15,15 @@ import java.util.List;
 
 public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingViewHolder> {
 
+    // A list to hold the booking data that will be displayed in the RecyclerView.
     private List<Booking> bookings;
 
+    // Constructor to initialize the adapter with a list of bookings.
     public BookingAdapter(List<Booking> bookings) {
         this.bookings = bookings;
     }
 
+    // This is where you inflate the layout for each item and return a new ViewHolder.
     @NonNull
     @Override
     public BookingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -28,6 +31,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
         return new BookingViewHolder(view);
     }
 
+    //This method updates the contents of the ViewHolder to reflect the item at the given position.
     @Override
     public void onBindViewHolder(@NonNull BookingViewHolder holder, int position) {
         Booking booking = bookings.get(position);
@@ -44,6 +48,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
         return bookings.size();
     }
 
+    //This method updates the contents of the ViewHolder to reflect the item at the given position.
     static class BookingViewHolder extends RecyclerView.ViewHolder {
         TextView tvChargerCode, tvLocation, tvDate, tvTime, tvStatus, tvCreatedAt;
 
