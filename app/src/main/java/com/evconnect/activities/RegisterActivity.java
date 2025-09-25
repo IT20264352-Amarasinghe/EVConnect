@@ -5,6 +5,7 @@ import static java.security.AccessController.getContext;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,8 @@ import com.evconnect.network.ApiService;
 import com.evconnect.utils.ApiErrorUtils;
 import com.google.gson.Gson;
 
+import java.util.regex.Pattern;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,6 +37,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     // Declare an instance of the data access object (DAO) for database operations.
     UserDao userDao;
+
+    // NIC pattern: exactly 9 digits followed by 'V' (case-insensitive) OR exactly 10 digits (0-9)
+    private static final Pattern NIC_PATTERN =
+            Pattern.compile("^[0-9]{9}[vV]$|^[0-9]{10}$");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +92,27 @@ public class RegisterActivity extends AppCompatActivity {
             if (password.isEmpty()) {
                 etPassword.setError("Password is required");
                 etPassword.requestFocus();
+                return;
+            }
+
+            // Validate NIC format (10 digits OR 9 digits + V/v)
+            if (!NIC_PATTERN.matcher(nic).matches()) {
+                etNic.setError("NIC must be 10 digits OR 9 digits ending with 'V'");
+                etNic.requestFocus();
+                return;
+            }
+
+            // Validate Email format (using Android's built-in Patterns utility)
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                etEmail.setError("Enter a valid email address");
+                etEmail.requestFocus();
+                return;
+            }
+
+            // Validate Phone number (must be exactly 10 digits)
+            if (phone.length() != 10 || !android.text.TextUtils.isDigitsOnly(phone)) {
+                etPhone.setError("Phone number must be exactly 10 digits");
+                etPhone.requestFocus();
                 return;
             }
 
