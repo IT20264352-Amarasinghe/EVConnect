@@ -33,6 +33,18 @@
         android:text="⚠️ Offline mode: You cannot create bookings"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/tvNoBookings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No bookings found"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#888"
+        android:padding="16dp"
+        android:visibility="gone"/>
+
     <!-- RecyclerView below banner -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_bookings"

@@ -42,6 +42,8 @@ public class ViewBookingsFragment extends Fragment {
     private TokenManager tokenManager ;
     private TextView offlineWarning;
     UserInfo user;
+    private TextView tvNoBookings;
+
 
     @Nullable
     @Override
@@ -55,6 +57,7 @@ public class ViewBookingsFragment extends Fragment {
         adapter = new BookingAdapter(bookingList);
         recyclerView.setAdapter(adapter);
         offlineWarning = view.findViewById(R.id.offlineWarning);
+        tvNoBookings = view.findViewById(R.id.tvNoBookings);
         tokenManager = new TokenManager(requireContext());
         String token = tokenManager.getToken();
 
@@ -84,10 +87,19 @@ public class ViewBookingsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Booking>> call, Response<List<Booking>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    offlineWarning.setVisibility(View.GONE);
+                    List<Booking> bookings = response.body();
+                    if (bookings.isEmpty()) {
+                        tvNoBookings.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        tvNoBookings.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
                     bookingList.clear();
-                    bookingList.addAll(response.body());
+                    bookingList.addAll(bookings);
                     adapter.notifyDataSetChanged();
+
+                    offlineWarning.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(getContext(), "No bookings found", Toast.LENGTH_SHORT).show();
                 }
